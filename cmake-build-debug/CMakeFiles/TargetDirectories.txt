@@ -1,0 +1,3 @@
+C:/Users/danst/CLionProjects/stocks/cmake-build-debug/CMakeFiles/stocks.dir
+C:/Users/danst/CLionProjects/stocks/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/danst/CLionProjects/stocks/cmake-build-debug/CMakeFiles/rebuild_cache.dir
