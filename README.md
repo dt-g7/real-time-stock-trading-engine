@@ -15,38 +15,53 @@ Lock-free stock order matching system in C++ using atomic operations and multi-t
 - **O(n) Matching Algorithm:**  
   The matching function scans the order book in linear time to match buy orders with the lowest available sell order for the same ticker (as specified).
 
-## Files
+## Project Structure
 
-- `main.cpp`  
-  Contains the complete source code including:
-    - The `Order` structure with an optimized memory layout.
-    - The `addOrder` function to add orders into the order book.
-    - The `simulateOrders` function to generate random orders.
-    - The `matchOrder` function that matches buy and sell orders.
-    - The `main` function which launches threads, simulates order creation, and outputs match results.
+real-time-stock-trading/ 
 
+├── include/ # Header files
+
+│ ├── OrderBook.hpp 
+
+│ └── Simulation.hpp 
+
+├── src/ # Source files
+
+│ ├── main.cpp 
+
+│ ├── OrderBook.cpp 
+
+│ └── Simulation.cpp 
+
+├── CMakeLists.txt # Build config
+
+└── README.md # Project documentation
+
+## File Descriptions
+
+- **main.cpp:**  
+  Contains the `main` function which launches threads to simulate order creation, outputs debug messages, and displays the match results.
+
+- **OrderBook.hpp / OrderBook.cpp:**  
+  Define the `Order` structure, the order book array, and the functions for adding orders and matching buy and sell orders.  
+  - The `Order` struct represents each order with an optimized memory layout.
+  - The `addOrder` function adds orders to the order book in a lock-free manner using an atomic counter.
+  - The `matchOrder` function scans the order book in two passes: first, to record the lowest sell price per ticker, and then to match buy orders that meet or exceed that sell price.
+
+- **Simulation.hpp / Simulation.cpp:**  
+  Contain the `simulateOrders` function which generates randomized orders and submits them concurrently via multiple threads.
+
+## Compilation Instructions
+
+If you are using `g++`, navigate to the project root and compile with:
+
+```bash
+g++ -std=c++11 src/main.cpp src/OrderBook.cpp src/Simulation.cpp -o real_time_stock_trading -pthread
+```
 ## Expected Output
 The program will output debug messages for each order added.
 After all threads have finished, it prints the total number of orders submitted.
 Finally, it outputs the list of matched buy and sell orders (if any), along with their order IDs, ticker values, and prices.
-
-## Code Overview
-
-- Order Structure:
-  Defines an order with optimized memory layout. The ticker is represented as an integer between 0 and 1023.
-
-- Order Book:
-  Uses a fixed-size array (orderBook) and an atomic counter (orderCount) to ensure thread-safe, lock-free order insertion.
-
-- Order Generation:
-  The simulateOrders function randomly generates order parameters and submits orders concurrently via multiple threads.
-
-- Matching Function:
-  The matchOrder function scans the order book in two passes:
-    1. Records the lowest sell price for each ticker.
-    2. Matches buy orders with available sell orders if the buy price is at least as high as the lowest sell price.
-
-Matches then get recorded and all matches get returned at the end
 
 ## Example Output
 
@@ -70,8 +85,9 @@ Match: 5 Buy Order ID 292, ticker 68, price 725.873 matched with Sell Order ID 1
 Match: 6 Buy Order ID 295, ticker 523, price 972.114 matched with Sell Order ID 256, ticker 523, price 287.413
 Match: 7 Buy Order ID 296, ticker 92, price 898.656 matched with Sell Order ID 130, ticker 92, price 79.8941
 ```
+License: This project isn’t licensed. Feel free to use it, 
 
-## Future Improvements to be done-
+## Future Improvements to be done
 - Order Updates and Removals:
   Implement atomic updates to handle partial order fills or order removals.
 - Error Handling:
@@ -79,3 +95,5 @@ Match: 7 Buy Order ID 296, ticker 92, price 898.656 matched with Sell Order ID 1
 - Improved Matching Logic:
   Incorporate more sophisticated matching criteria and mechanisms for real-world trading scenarios. Ex. greater than or equal to buy price + transaction cost(such as slippage/market impact)
 - After Matching we could also delete the buy/sell orders that match based on the number of buy orders.
+
+
